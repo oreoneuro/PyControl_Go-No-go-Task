@@ -89,6 +89,13 @@ v.comp_list = [2, 6, 10]
 v.comp_batch = 2
 
 
+# --------------- Feedback sound ------------------
+v.sound_feedback = True
+v.correct_sound_ms = 60
+v.error_sound_ms = 200
+v.correct_volume = 10
+v.error_volume = 30
+
 # ---------------- Run start/end ----------------
 
 def run_start():
@@ -111,6 +118,21 @@ def run_end():
 
     hw.off()
     hw.house_light.off()
+
+
+# ---------------- helper: feedback sound ----------------
+def play_feedback(is_correct):
+    if not v.sound_feedback:
+        return
+    if is_correct:
+        hw.speaker.set_volume(v.correct_volume)
+        hw.speaker.noise()
+        set_timer('feedback_off', v.correct_sound_ms * ms)
+    else:
+        hw.speaker.set_volume(v.error_volume)
+        hw.speaker.noise()
+        set_timer('feedback_off', v.error_sound_ms * ms)
+
 
 
 # ---------------- Reward delivery ----------------
@@ -286,6 +308,9 @@ def penalty(event):
 
         # House light signals the penalty period.
         hw.house_light.on()
+
+        # feedback tone for penalty.
+        play_feedback(is_correct=False)
 
         timed_goto_state('iti', v.penalty_dur)
 
