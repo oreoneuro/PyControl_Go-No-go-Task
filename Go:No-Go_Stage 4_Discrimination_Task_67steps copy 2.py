@@ -130,6 +130,13 @@ v.comp_period = 12
 v.comp_list = [2, 6, 10]
 v.comp_batch = 2
 
+# ---------------- Feedback sound ---------------------
+v.sound_feedback = True
+v.correct_sound_ms = 60
+v.error_sound_ms = 200
+v.correct_volume = 10
+v.error_volume = 30
+
 
 # ---------------- Run start/end ----------------
 
@@ -431,6 +438,9 @@ def penalty(event):
 
         # House light signals penalty.
         hw.house_light.on()
+
+        # Feedback tone for penalty.
+        play_feedback(is_correct=True)
 
         timed_goto_state(
             'iti',
